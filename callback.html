@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Connected – Muson Video Scheduler</title>
+<style>
+body{font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 20px;line-height:1.6;color:#222}
+.box{background:#f4f4f4;padding:16px;border-radius:6px;word-break:break-all;font-family:monospace}
+button{margin-top:12px;padding:10px 20px;font-size:15px;cursor:pointer}
+.err{color:#c00}
+</style>
+</head>
+<body>
+<h1 id="title">Connecting…</h1>
+<div id="content"></div>
+
+<script>
+var p = new URLSearchParams(window.location.search);
+var code = p.get("code");
+var state = p.get("state");
+var error = p.get("error");
+var t = document.getElementById("title");
+var c = document.getElementById("content");
+
+if (error) {
+  t.textContent = "Authorization failed";
+  c.innerHTML = '<p class="err">' + error + ": " + (p.get("error_description") || "") + "</p>";
+} else if (code) {
+  t.textContent = "TikTok account connected";
+  c.innerHTML =
+    "<p>Account: <strong>" + (state || "-") + "</strong></p>" +
+    "<p>Authorization code (copy this into the scheduler):</p>" +
+    '<div class="box" id="code"></div>' +
+    '<button onclick="copy()">Copy code</button>' +
+    "<p>This code expires in a few minutes and can be used once.</p>";
+  document.getElementById("code").textContent = code;
+} else {
+  t.textContent = "No authorization code found";
+  c.innerHTML = '<p><a href="connect.html">Back to connect page</a></p>';
+}
+function copy(){
+  navigator.clipboard.writeText(code).then(function(){ alert("Copied"); });
+}
+</script>
+</body>
+</html>
